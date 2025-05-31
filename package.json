@@ -1,0 +1,16 @@
+{
+  "name": "demo-habits",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "按日期打卡、连续记录和完成情况统计",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test core.test.js",
+    "check": "node --check core.js && node --check app.js && node --check server.mjs && node --check history.mjs",
+    "history": "node history.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
