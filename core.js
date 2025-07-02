@@ -9,3 +9,13 @@ export function validDate(value) {
   return value;
 }
 
+export function addDays(value, offset) {
+  validDate(value);
+  if (!Number.isInteger(offset) || Math.abs(offset) > 36600) throw new Error('日期偏移超出范围');
+  const date = new Date(value + 'T00:00:00Z');
+  date.setUTCDate(date.getUTCDate() + offset);
+  const output = date.toISOString().slice(0, 10);
+  validDate(output);
+  return output;
+}
+
