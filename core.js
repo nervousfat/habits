@@ -19,3 +19,13 @@ export function addDays(value, offset) {
   return output;
 }
 
+export function todayKey(now = new Date()) {
+  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new Error('无效时间');
+  const year = String(now.getFullYear()).padStart(4, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const value = [year, month, day].join('-');
+  validDate(value);
+  return value;
+}
+
