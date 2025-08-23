@@ -29,3 +29,14 @@ export function todayKey(now = new Date()) {
   return value;
 }
 
+export function normalizeWeekdays(days) {
+  if (!Array.isArray(days) || !days.length || days.length > 7) {
+    throw new Error('请至少选择一个打卡日');
+  }
+  if (days.some(day => !Number.isInteger(day) || day < 0 || day > 6)) {
+    throw new Error('星期必须是 0 到 6 的整数');
+  }
+  if (new Set(days).size !== days.length) throw new Error('打卡日不能重复');
+  return [...days].sort((a, b) => a - b);
+}
+
