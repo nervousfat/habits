@@ -40,3 +40,19 @@ export function normalizeWeekdays(days) {
   return [...days].sort((a, b) => a - b);
 }
 
+export function normalizeHabit(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('习惯数据无效');
+  if (typeof raw.id !== 'string' || !raw.id.trim() || raw.id.length > 100) throw new Error('习惯 ID 无效');
+  if (typeof raw.name !== 'string' || !raw.name.trim() || raw.name.trim().length > 80) throw new Error('名称需要 1 到 80 个字符');
+  const weekdays = normalizeWeekdays(raw.weekdays);
+  const createdAt = validDate(raw.createdAt);
+  if (!Array.isArray(raw.logs) || raw.logs.length > 20000) throw new Error('打卡记录无效或过多');
+  if (new Set(raw.logs).size !== raw.logs.length) throw new Error('打卡记录不能重复');
+  const logs = raw.logs.map(validDate).sort();
+  for (const date of logs) {
+    if (date < createdAt || !weekdays.includes(new Date(date + 'T00:00:00Z').getUTCDay())) throw new Error('打卡日期不符合计划');
+  }
+  const color = ['green', 'blue', 'amber', 'rose'].includes(raw.color) ? raw.color : 'green';
+  return { id: raw.id, name: raw.name.trim(), weekdays, color, createdAt, logs };
+}
+
