@@ -78,3 +78,12 @@ export function renameHabit(habits, id, name) {
   return updated;
 }
 
+export function removeHabit(habits, id) {
+  if (!Array.isArray(habits)) throw new Error('习惯列表无效');
+  const target = habits.find(habit => habit.id === id);
+  if (!target) throw new Error('未找到习惯');
+  const remaining = habits.filter(habit => habit.id !== id);
+  if (remaining.length !== habits.length - 1) throw new Error('习惯 ID 重复');
+  return remaining;
+}
+
