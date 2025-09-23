@@ -56,3 +56,15 @@ export function normalizeHabit(raw) {
   return { id: raw.id, name: raw.name.trim(), weekdays, color, createdAt, logs };
 }
 
+export function createHabit(name, weekdays, id, date, color = 'green') {
+  const draft = {
+    id,
+    name,
+    weekdays,
+    color,
+    createdAt: date,
+    logs: []
+  };
+  return normalizeHabit(draft);
+}
+
