@@ -68,3 +68,13 @@ export function createHabit(name, weekdays, id, date, color = 'green') {
   return normalizeHabit(draft);
 }
 
+export function renameHabit(habits, id, name) {
+  if (!habits.some(habit => habit.id === id)) throw new Error('未找到习惯');
+  const updated = habits.map(habit => {
+    if (habit.id !== id) return habit;
+    const draft = { ...habit, name };
+    return normalizeHabit(draft);
+  });
+  return updated;
+}
+
