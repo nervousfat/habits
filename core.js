@@ -87,3 +87,12 @@ export function removeHabit(habits, id) {
   return remaining;
 }
 
+export function isScheduled(habit, date) {
+  validDate(date);
+  if (date < habit.createdAt) return false;
+  const parsed = new Date(date + 'T00:00:00Z');
+  const weekday = parsed.getUTCDay();
+  const selected = habit.weekdays.includes(weekday);
+  return selected;
+}
+
