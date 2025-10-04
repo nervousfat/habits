@@ -96,3 +96,15 @@ export function isScheduled(habit, date) {
   return selected;
 }
 
+export function toggleLog(habits, id, date, today) {
+  validDate(date); validDate(today);
+  if (date > today) throw new Error('不能为未来日期打卡');
+  if (!habits.some(habit => habit.id === id)) throw new Error('未找到习惯');
+  return habits.map(habit => {
+    if (habit.id !== id) return habit;
+    if (!isScheduled(habit, date)) throw new Error('这一天不在习惯计划内');
+    const logs = habit.logs.includes(date) ? habit.logs.filter(day => day !== date) : [...habit.logs, date];
+    return normalizeHabit({ ...habit, logs });
+  });
+}
+
