@@ -108,3 +108,13 @@ export function toggleLog(habits, id, date, today) {
   });
 }
 
+export function logsBetween(habit, start, end) {
+  validDate(start); validDate(end);
+  if (start > end) throw new Error('开始日期不能晚于结束日期');
+  const matches = habit.logs.filter(date => {
+    if (date < start || date > end) return false;
+    return isScheduled(habit, date);
+  });
+  return [...matches].sort();
+}
+
