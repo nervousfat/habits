@@ -118,3 +118,15 @@ export function logsBetween(habit, start, end) {
   return [...matches].sort();
 }
 
+export function scheduledDates(habit, start, end) {
+  validDate(start); validDate(end);
+  const days = (Date.parse(end) - Date.parse(start)) / 86400000;
+  if (days < 0 || days > 3660) throw new Error('日期范围应为 0 到 3660 天');
+  const scheduled = [];
+  for (let offset = 0; offset <= days; offset++) {
+    const date = addDays(start, offset);
+    if (isScheduled(habit, date)) scheduled.push(date);
+  }
+  return scheduled;
+}
+
