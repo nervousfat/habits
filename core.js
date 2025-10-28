@@ -130,3 +130,14 @@ export function scheduledDates(habit, start, end) {
   return scheduled;
 }
 
+export function completionRate(habit, start, end) {
+  const dates = scheduledDates(habit, start, end);
+  const done = new Set(logsBetween(habit, start, end));
+  const completed = dates.filter(date => done.has(date)).length;
+  return {
+    scheduled: dates.length,
+    completed,
+    percent: dates.length ? Math.round(completed / dates.length * 100) : 0
+  };
+}
+
