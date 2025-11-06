@@ -146,11 +146,13 @@ export function currentStreak(habit, today) {
   const logs = new Set(habit.logs);
   let date = today;
   let streak = 0;
-  for (let checked = 0; checked < 140007 && date >= habit.createdAt; checked++, date = addDays(date, -1)) {
-    if (!isScheduled(habit, date)) continue;
-    if (date === today && !logs.has(date)) continue;
-    if (!logs.has(date)) break;
-    streak++;
+  for (let checked = 0; checked < 140007 && date >= habit.createdAt; checked++) {
+    if (isScheduled(habit, date) && (date !== today || logs.has(date))) {
+      if (!logs.has(date)) break;
+      streak++;
+    }
+    if (date === habit.createdAt) break;
+    date = addDays(date, -1);
   }
   return streak;
 }
