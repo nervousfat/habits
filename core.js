@@ -171,3 +171,14 @@ export function bestStreak(habit, today) {
   return best;
 }
 
+export function weekSummary(habits, anchor) {
+  validDate(anchor);
+  const weekday = new Date(anchor + 'T00:00:00Z').getUTCDay();
+  const monday = addDays(anchor, -((weekday + 6) % 7));
+  return Array.from({ length: 7 }, (_, offset) => {
+    const date = addDays(monday, offset);
+    const scheduled = habits.filter(habit => isScheduled(habit, date));
+    return { date, scheduled: scheduled.length, completed: scheduled.filter(habit => habit.logs.includes(date)).length };
+  });
+}
+
