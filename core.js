@@ -157,3 +157,17 @@ export function currentStreak(habit, today) {
   return streak;
 }
 
+export function bestStreak(habit, today) {
+  validDate(today);
+  const dates = habit.logs.filter(date => date <= today && isScheduled(habit, date)).sort();
+  let best = 0; let current = 0; let previous = null;
+  for (const date of dates) {
+    let next = previous ? addDays(previous, 1) : null;
+    while (next && !isScheduled(habit, next)) next = addDays(next, 1);
+    current = next === date ? current + 1 : 1;
+    best = Math.max(best, current);
+    previous = date;
+  }
+  return best;
+}
+
