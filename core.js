@@ -182,3 +182,14 @@ export function weekSummary(habits, anchor) {
   });
 }
 
+export function monthGrid(month) {
+  if (typeof month !== 'string' || !/^\d{4}-\d{2}$/.test(month)) throw new Error('月份格式应为 YYYY-MM');
+  const first = validDate(month + '-01');
+  const weekday = new Date(first + 'T00:00:00Z').getUTCDay();
+  const start = addDays(first, -((weekday + 6) % 7));
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = addDays(start, index);
+    return { date, inMonth: date.startsWith(month + '-') };
+  });
+}
+
