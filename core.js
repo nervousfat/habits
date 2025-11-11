@@ -193,3 +193,13 @@ export function monthGrid(month) {
   });
 }
 
+export function exportHabits(habits) {
+  if (!Array.isArray(habits) || habits.length > 100) throw new Error('最多支持 100 个习惯');
+  const records = habits.map(normalizeHabit);
+  const ids = records.map(habit => habit.id);
+  if (new Set(ids).size !== ids.length) throw new Error('习惯 ID 重复');
+  const payload = { app: 'little-habits', version: 1, habits: records };
+  const serialized = JSON.stringify(payload, null, 2);
+  return serialized;
+}
+
