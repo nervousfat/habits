@@ -203,3 +203,15 @@ export function exportHabits(habits) {
   return serialized;
 }
 
+export function importHabits(text, today = todayKey()) {
+  validDate(today);
+  if (typeof text !== 'string' || text.length > 5000000) throw new Error('备份文件过大');
+  const data = JSON.parse(text);
+  if (!data || data.app !== 'little-habits' || data.version !== 1 || !Array.isArray(data.habits)) throw new Error('不是有效的习惯备份');
+  const records = JSON.parse(exportHabits(data.habits)).habits;
+  for (const habit of records) {
+    if (habit.createdAt > today || habit.logs.some(date => date > today)) throw new Error('备份包含未来记录');
+  }
+  return records;
+}
+
