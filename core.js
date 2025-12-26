@@ -193,6 +193,11 @@ export function monthGrid(month) {
   });
 }
 
+const MAX_BACKUP_BYTES = 5_000_000;
+function checkBackupSize(text) {
+  if (new TextEncoder().encode(text).byteLength > MAX_BACKUP_BYTES) throw new Error('备份文件不能超过 5 MB');
+}
+
 export function exportHabits(habits) {
   if (!Array.isArray(habits) || habits.length > 100) throw new Error('最多支持 100 个习惯');
   const records = habits.map(normalizeHabit);
@@ -200,12 +205,14 @@ export function exportHabits(habits) {
   if (new Set(ids).size !== ids.length) throw new Error('习惯 ID 重复');
   const payload = { app: 'little-habits', version: 1, habits: records };
   const serialized = JSON.stringify(payload, null, 2);
+  checkBackupSize(serialized);
   return serialized;
 }
 
 export function importHabits(text, today = todayKey()) {
   validDate(today);
-  if (typeof text !== 'string' || text.length > 5000000) throw new Error('备份文件过大');
+  if (typeof text !== 'string') throw new Error('备份必须是 JSON 文本');
+  checkBackupSize(text);
   const data = JSON.parse(text);
   if (!data || data.app !== 'little-habits' || data.version !== 1 || !Array.isArray(data.habits)) throw new Error('不是有效的习惯备份');
   const records = JSON.parse(exportHabits(data.habits)).habits;
