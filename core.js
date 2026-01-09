@@ -222,3 +222,15 @@ export function importHabits(text, today = todayKey()) {
   return records;
 }
 
+export function sampleHabits(today) {
+  validDate(today);
+  const start = addDays(today, -20);
+  const definitions = [['sample-read', '阅读 20 分钟', 'green'], ['sample-walk', '出去走走', 'blue'], ['sample-water', '认真喝水', 'amber']];
+  return definitions.map(([id, name, color], index) => {
+    const habit = createHabit(name, index === 1 ? [1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6], id, start, color);
+    const dates = scheduledDates(habit, start, today);
+    habit.logs = dates.filter((date, offset) => date < today && (offset + index) % 5 !== 0);
+    return habit;
+  });
+}
+
