@@ -13,3 +13,14 @@ test("calendar dates reject rollover and malformed input", () => {
   assert.throws(() => core.validDate('2026-13-01'));
 });
 
+test("date offsets cross month and year boundaries", () => {
+  assert.equal(core.addDays('2024-02-28', 1), '2024-02-29');
+  assert.equal(core.addDays('2024-02-29', 1), '2024-03-01');
+  assert.equal(core.addDays('2025-01-01', -1), '2024-12-31');
+  assert.equal(core.addDays('2025-03-09', 1), '2025-03-10');
+  assert.equal(core.addDays('2026-09-10', 0), '2026-09-10');
+  assert.throws(() => core.addDays('2026-09-10', 1.5));
+  assert.throws(() => core.addDays('2026-09-10', Infinity));
+  assert.throws(() => core.addDays('invalid', 1));
+});
+
