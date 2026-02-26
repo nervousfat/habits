@@ -20,3 +20,9 @@ test('isScheduled respects the creation floor', () => {
   assert.equal(core.isScheduled(target, '2026-01-26'), false);
   assert.equal(core.isScheduled(target, '2026-02-03'), false);
 });
+test('normalizeHabit caps record volume and validates log alignment', () => {
+  const base = habit({ weekdays: [1], createdAt: '2026-02-02' });
+  assert.throws(() => core.normalizeHabit({ ...base, logs: ['2026-02-03'] }), /打卡日期不符合计划/);
+  assert.throws(() => core.normalizeHabit({ ...base, logs: ['2026-01-26'] }), /打卡日期不符合计划/);
+  assert.throws(() => core.normalizeHabit({ ...base, id: ' ' }), /习惯 ID 无效/);
+});
