@@ -24,3 +24,14 @@ test("date offsets cross month and year boundaries", () => {
   assert.throws(() => core.addDays('invalid', 1));
 });
 
+test("local date keys reflect local clock components", () => {
+  const date = new Date(2026, 8, 10, 23, 59);
+  assert.equal(core.todayKey(date), '2026-09-10');
+  assert.equal(core.todayKey(new Date(2026, 0, 1)), '2026-01-01');
+  assert.throws(() => core.todayKey(new Date(NaN)));
+  assert.throws(() => core.todayKey('2026-09-10'));
+  const result = core.todayKey();
+  assert.match(result, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(core.validDate(result), result);
+});
+
