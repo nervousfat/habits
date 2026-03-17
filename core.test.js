@@ -46,3 +46,14 @@ test("weekly schedules sort and validate weekday selections", () => {
   assert.throws(() => core.normalizeWeekdays(null));
 });
 
+test("habit creation enforces names identifiers and start dates", () => {
+  const habit = core.createHabit(' 阅读 ', [1], 'read', '2026-09-01');
+  assert.equal(habit.name, '阅读');
+  assert.equal(habit.id, 'read');
+  assert.deepEqual(habit.logs, []);
+  assert.equal(habit.color, 'green');
+  assert.throws(() => core.createHabit(' ', [1], 'x', '2026-09-01'));
+  assert.throws(() => core.createHabit('a', [1], '', '2026-09-01'));
+  assert.throws(() => core.createHabit('a'.repeat(81), [1], 'x', '2026-09-01'));
+});
+
