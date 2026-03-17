@@ -35,3 +35,14 @@ test("local date keys reflect local clock components", () => {
   assert.equal(core.validDate(result), result);
 });
 
+test("weekly schedules sort and validate weekday selections", () => {
+  assert.deepEqual(core.normalizeWeekdays([5, 1, 3]), [1, 3, 5]);
+  assert.deepEqual(core.normalizeWeekdays([0]), [0]);
+  assert.throws(() => core.normalizeWeekdays([]));
+  assert.throws(() => core.normalizeWeekdays([1, 1]));
+  assert.throws(() => core.normalizeWeekdays([7]));
+  assert.throws(() => core.normalizeWeekdays([-1]));
+  assert.throws(() => core.normalizeWeekdays(['1']));
+  assert.throws(() => core.normalizeWeekdays(null));
+});
+
