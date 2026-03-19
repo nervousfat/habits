@@ -57,3 +57,14 @@ test("habit creation enforces names identifiers and start dates", () => {
   assert.throws(() => core.createHabit('a'.repeat(81), [1], 'x', '2026-09-01'));
 });
 
+test("renaming and removal preserve previous state", () => {
+  const original = [core.createHabit('阅读', [1], 'x', '2026-09-01')];
+  const renamed = core.renameHabit(original, 'x', '写作');
+  assert.equal(renamed[0].name, '写作');
+  assert.equal(original[0].name, '阅读');
+  assert.deepEqual(core.removeHabit(original, 'x'), []);
+  assert.equal(original.length, 1);
+  assert.throws(() => core.renameHabit(original, 'missing', 'hello'));
+  assert.throws(() => core.removeHabit(original, 'missing'));
+});
+
