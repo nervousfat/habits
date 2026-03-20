@@ -79,3 +79,14 @@ test("schedules exclude dates before creation and rest days", () => {
   assert.throws(() => core.isScheduled(habit, '2026-09-31'));
 });
 
+test("completion toggling is reversible and blocks future dates", () => {
+  const source = [core.createHabit('运动', [1, 3, 5], 'x', '2026-09-01')];
+  const done = core.toggleLog(source, 'x', '2026-09-02', '2026-09-10');
+  assert.deepEqual(done[0].logs, ['2026-09-02']);
+  assert.deepEqual(source[0].logs, []);
+  assert.deepEqual(core.toggleLog(done, 'x', '2026-09-02', '2026-09-10')[0].logs, []);
+  assert.throws(() => core.toggleLog(source, 'x', '2026-09-11', '2026-09-10'));
+  assert.throws(() => core.toggleLog(source, 'x', '2026-09-03', '2026-09-10'));
+  assert.throws(() => core.toggleLog(source, 'unknown', '2026-09-02', '2026-09-10'));
+});
+
