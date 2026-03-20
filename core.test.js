@@ -68,3 +68,14 @@ test("renaming and removal preserve previous state", () => {
   assert.throws(() => core.removeHabit(original, 'missing'));
 });
 
+test("schedules exclude dates before creation and rest days", () => {
+  const habit = core.createHabit('运动', [1, 3, 5], 'x', '2026-09-01');
+  assert.equal(core.isScheduled(habit, '2026-08-31'), false);
+  assert.equal(core.isScheduled(habit, '2026-09-02'), true);
+  assert.equal(core.isScheduled(habit, '2026-09-03'), false);
+  assert.equal(core.isScheduled(habit, '2026-09-04'), true);
+  assert.equal(core.isScheduled(habit, '2026-09-05'), false);
+  assert.equal(core.isScheduled(habit, '2026-09-07'), true);
+  assert.throws(() => core.isScheduled(habit, '2026-09-31'));
+});
+
