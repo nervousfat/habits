@@ -90,3 +90,14 @@ test("completion toggling is reversible and blocks future dates", () => {
   assert.throws(() => core.toggleLog(source, 'unknown', '2026-09-02', '2026-09-10'));
 });
 
+test("scheduled completion rates use inclusive date ranges", () => {
+  const habit = core.createHabit('运动', [1, 3, 5], 'x', '2026-09-01');
+  habit.logs = ['2026-09-02', '2026-09-07'];
+  assert.deepEqual(core.scheduledDates(habit, '2026-09-01', '2026-09-07'), ['2026-09-02', '2026-09-04', '2026-09-07']);
+  assert.deepEqual(core.logsBetween(habit, '2026-09-02', '2026-09-04'), ['2026-09-02']);
+  assert.deepEqual(core.completionRate(habit, '2026-09-01', '2026-09-07'), { scheduled: 3, completed: 2, percent: 67 });
+  assert.equal(core.completionRate(habit, '2026-09-05', '2026-09-06').percent, 0);
+  assert.throws(() => core.scheduledDates(habit, '2026-09-07', '2026-09-01'));
+  assert.throws(() => core.scheduledDates(habit, '2000-01-01', '2026-09-01'));
+});
+
