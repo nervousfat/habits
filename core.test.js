@@ -101,3 +101,14 @@ test("scheduled completion rates use inclusive date ranges", () => {
   assert.throws(() => core.scheduledDates(habit, '2000-01-01', '2026-09-01'));
 });
 
+test("active streaks skip rest days and keep today open", () => {
+  const habit = core.createHabit('运动', [1, 3, 5], 'x', '2026-09-01');
+  habit.logs = ['2026-09-02', '2026-09-04', '2026-09-07'];
+  assert.equal(core.currentStreak(habit, '2026-09-07'), 3);
+  assert.equal(core.currentStreak(habit, '2026-09-08'), 3);
+  assert.equal(core.currentStreak(habit, '2026-09-09'), 3);
+  assert.equal(core.currentStreak(habit, '2026-09-10'), 0);
+  assert.equal(core.currentStreak(habit, '2026-08-31'), 0);
+  assert.equal(core.currentStreak({ ...habit, logs: [] }, '2026-09-02'), 0);
+});
+
