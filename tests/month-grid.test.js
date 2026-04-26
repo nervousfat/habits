@@ -10,3 +10,8 @@ test('monthGrid lays out six Monday-anchored weeks', () => {
   assert.equal(grid.filter(cell => cell.inMonth).length, 31);
   assert.throws(() => core.monthGrid('2026-1'), /月份格式应为 YYYY-MM/);
 });
+test('monthGrid keeps February boundaries aligned', () => {
+  const grid = core.monthGrid('2026-02');
+  assert.equal(grid.filter(cell => cell.inMonth).length, 28);
+  assert.equal(grid[0].date, '2026-01-26');
+});
