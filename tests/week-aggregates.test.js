@@ -11,3 +11,9 @@ test('weekSummary aggregates schedules Monday through Sunday', () => {
   assert.equal(week[0].completed, 1);
   assert.equal(week[1].completed, 0);
 });
+test('weekSummary skips habits not planned for a day', () => {
+  const mondays = { id: 'm', name: 'Mondays', weekdays: [1], color: 'blue', createdAt: '2025-11-01', logs: [] };
+  const week = core.weekSummary([mondays], '2026-01-08');
+  assert.equal(week[0].scheduled, 1);
+  for (const day of week.slice(1)) assert.equal(day.scheduled, 0);
+});
