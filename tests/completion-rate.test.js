@@ -9,3 +9,9 @@ test('completionRate measures scheduled versus completed days', () => {
   assert.equal(rate.completed, 3);
   assert.equal(rate.percent, 60);
 });
+test('completionRate reports zero for empty windows', () => {
+  const target = { id: 's', name: 'Sun', weekdays: [0], color: 'green', createdAt: '2026-05-10', logs: [] };
+  const rate = core.completionRate(target, '2026-05-11', '2026-05-15');
+  assert.equal(rate.scheduled, 0);
+  assert.equal(rate.percent, 0);
+});
