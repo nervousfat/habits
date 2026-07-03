@@ -112,3 +112,14 @@ test("active streaks skip rest days and keep today open", () => {
   assert.equal(core.currentStreak({ ...habit, logs: [] }, '2026-09-02'), 0);
 });
 
+test("best streaks detect gaps in weekly schedules", () => {
+  const habit = core.createHabit('运动', [1, 3, 5], 'x', '2026-09-01');
+  habit.logs = ['2026-09-02', '2026-09-04', '2026-09-07', '2026-09-11'];
+  assert.equal(core.bestStreak(habit, '2026-09-11'), 3);
+  assert.equal(core.bestStreak(habit, '2026-09-02'), 1);
+  assert.equal(core.bestStreak(habit, '2026-08-31'), 0);
+  assert.equal(core.bestStreak({ ...habit, logs: [] }, '2026-09-11'), 0);
+  habit.logs = ['2026-09-04', '2026-09-07'];
+  assert.equal(core.bestStreak(habit, '2026-09-10'), 2);
+});
+
