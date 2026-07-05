@@ -123,3 +123,15 @@ test("best streaks detect gaps in weekly schedules", () => {
   assert.equal(core.bestStreak(habit, '2026-09-10'), 2);
 });
 
+test("weekly and monthly grids start on Monday", () => {
+  const habit = core.createHabit('阅读', [0, 1, 2, 3, 4, 5, 6], 'x', '2026-09-01');
+  habit.logs = ['2026-09-07'];
+  const week = core.weekSummary([habit], '2026-09-10');
+  assert.equal(week[0].date, '2026-09-07');
+  assert.equal(week[0].completed, 1);
+  assert.equal(week.length, 7);
+  assert.equal(core.monthGrid('2026-09').length, 42);
+  assert.equal(core.monthGrid('2026-09')[0].date, '2026-08-31');
+  assert.equal(core.monthGrid('2026-09').filter(day => day.inMonth).length, 30);
+});
+
