@@ -135,3 +135,14 @@ test("weekly and monthly grids start on Monday", () => {
   assert.equal(core.monthGrid('2026-09').filter(day => day.inMonth).length, 30);
 });
 
+test("backup import rejects duplicates future logs and malformed data", () => {
+  const habit = core.createHabit('阅读', [0, 1, 2, 3, 4, 5, 6], 'x', '2026-09-01');
+  assert.deepEqual(core.importHabits(core.exportHabits([habit]), '2026-09-10'), [habit]);
+  assert.throws(() => core.exportHabits([habit, habit]));
+  assert.throws(() => core.importHabits('{bad', '2026-09-10'));
+  assert.throws(() => core.importHabits('{}', '2026-09-10'));
+  assert.throws(() => core.importHabits(core.exportHabits([{ ...habit, logs: ['2026-09-11'] }]), '2026-09-10'));
+  assert.throws(() => core.normalizeHabit({ ...habit, logs: ['2026-09-02', '2026-09-02'] }));
+  assert.throws(() => core.normalizeHabit({ ...habit, logs: ['2026-08-31'] }));
+});
+
