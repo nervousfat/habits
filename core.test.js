@@ -146,3 +146,15 @@ test("backup import rejects duplicates future logs and malformed data", () => {
   assert.throws(() => core.normalizeHabit({ ...habit, logs: ['2026-08-31'] }));
 });
 
+test("sample records remain valid across month boundaries", () => {
+  const habits = core.sampleHabits('2026-01-01');
+  assert.equal(habits.length, 3);
+  assert.equal(new Set(habits.map(habit => habit.id)).size, 3);
+  for (const habit of habits) {
+    assert.deepEqual(core.normalizeHabit(habit), habit);
+    assert.ok(habit.logs.every(date => date < '2026-01-01'));
+    assert.ok(habit.logs.length > 0);
+  }
+  assert.deepEqual(core.importHabits(core.exportHabits(habits), '2026-01-01'), habits);
+});
+
