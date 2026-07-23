@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="按自己的节奏建立习惯，本地打卡、连续记录与月历。">
+  <title>习惯打卡 · Little habits</title>
+  <link rel="stylesheet" href="./base.css">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body><main>
+  <header><strong>◌ 习惯打卡</strong><span class="badge">每天一点点</span></header>
+  <section class="hero"><div class="eyebrow">Little habits / daily rhythm</div><h1>让小事，慢慢成为日常。</h1><p class="muted">不追求完美连续，只记录每一次认真开始。</p></section>
+  <div class="toolbar topbar"><label>查看日期<input id="active-date" type="date" required></label><button id="today" class="secondary" type="button">回到今天</button><button id="sample" class="secondary" type="button">载入示例</button><button id="export" class="secondary" type="button">导出备份</button><label class="button secondary">导入备份<input id="import" type="file" accept=".json,application/json" class="sr-only"></label></div>
+  <p id="status" role="status" aria-live="polite">正在读取本地记录…</p>
+  <button id="recover" type="button" class="danger" hidden>清除损坏数据并重新开始</button>
+  <section id="metrics" class="grid metrics" aria-label="完成概况"></section>
+  <section class="layout">
+    <div class="stack"><section class="card"><div class="row section-title"><h2>我的习惯</h2><label class="compact">显示<select id="filter"><option value="all">所有习惯</option><option value="scheduled">当天计划</option><option value="pending">当天待完成</option></select></label></div><div id="habit-list" class="stack"></div></section><section class="card"><h2>这一周</h2><div id="week" class="week" aria-label="本周完成记录"></div></section></div>
+    <aside class="stack"><section class="card"><h2>添加一个小习惯</h2><form id="habit-form" class="stack"><label>习惯名称<input id="habit-name" maxlength="80" required placeholder="例如：阅读 20 分钟"></label><fieldset><legend>每周打卡日</legend><div id="weekdays" class="weekday-options"></div></fieldset><label>标记颜色<select id="color"><option value="green">苔绿</option><option value="blue">湖蓝</option><option value="amber">暖黄</option><option value="rose">玫瑰</option></select></label><small>新习惯从今天开始。可在月历补记过去的计划日。</small><button type="submit">添加习惯</button></form></section><section class="card"><h2>月度足迹</h2><div class="stack"><label>选择习惯<select id="calendar-habit"></select></label><label>月份<input id="month" type="month" required></label><div id="calendar" class="calendar" aria-label="月历"></div><small>实心圆表示完成，点击计划日可打卡或撤销。</small></div></section></aside>
+  </section>
+  <section id="help" class="card help"></section>
+  <footer>数据只保存在当前浏览器 · 建议定期导出备份</footer>
+</main></body>
+</html>
