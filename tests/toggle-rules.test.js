@@ -12,3 +12,8 @@ test('toggleLog adds and removes records for planned days', () => {
   const removed = core.toggleLog(added, 'h1', '2026-06-01', '2026-06-02');
   assert.deepEqual(removed[0].logs, []);
 });
+test('toggleLog rejects future dates and unplanned days', () => {
+  assert.throws(() => core.toggleLog([habit], 'h1', '2026-06-08', '2026-06-02'), /不能为未来日期打卡/);
+  assert.throws(() => core.toggleLog([habit], 'h1', '2026-06-02', '2026-06-05'), /这一天不在习惯计划内/);
+  assert.throws(() => core.toggleLog([habit], 'missing', '2026-06-01', '2026-06-02'), /未找到习惯/);
+});
