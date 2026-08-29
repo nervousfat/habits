@@ -10,3 +10,7 @@ test('exportHabits rejects duplicate identifiers and non-lists', () => {
   assert.throws(() => core.exportHabits(pair), /习惯 ID 重复/);
   assert.throws(() => core.exportHabits('nope'), /最多支持 100 个习惯/);
 });
+test('importHabits only accepts little-habits backups', () => {
+  assert.throws(() => core.importHabits('{"app":"other","version":1,"habits":[]}', '2026-08-05'), /不是有效的习惯备份/);
+  assert.throws(() => core.importHabits('not json', '2026-08-05'), SyntaxError);
+});
