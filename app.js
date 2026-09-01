@@ -140,3 +140,35 @@ function render() {
   if (habits.some(habit => habit.id === chosen)) byId('calendar-habit').value = chosen;
   renderHabits(); renderOverview(); renderCalendar();
 }
+
+byId('export').addEventListener('click', () => action(() => {
+  const url = URL.createObjectURL(new Blob([core.exportHabits(habits)], { type: 'application/json' }));
+  const link = element('a'); link.href = url; link.download = 'habits-' + core.todayKey() + '.json';
+  link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  announce('备份文件已生成。');
+}));
+byId('import').addEventListener('change', async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    if (file.size > 5000000) throw new Error('备份文件不能超过 5 MB');
+    const records = core.importHabits(await file.text());
+    if (!confirm('使用备份中的 ' + records.length + ' 个习惯替换本地记录？')) return;
+    localStorage.setItem(storageKey, core.exportHabits(records));
+    storageBlocked = false; habits = records; byId('recover').hidden = true;
+    render(); announce('备份已导入。');
+  } catch (error) { announce('导入失败：' + error.message); }
+  finally { event.target.value = ''; }
+});
+byId('sample').addEventListener('click', () => {
+  if (habits.length && !confirm('示例将替换当前习惯，建议先导出备份。继续？')) return;
+  action(() => commit(core.sampleHabits(core.todayKey()), '已载入三组示例习惯。'));
+});
+byId('recover').addEventListener('click', () => {
+  if (!confirm('清除无法读取的原始记录？此操作无法撤销。')) return;
+  action(() => {
+    localStorage.removeItem(storageKey);
+    storageBlocked = false; habits = []; byId('recover').hidden = true;
+    render(); announce('已清除损坏数据，可以重新开始。');
+  });
+});
