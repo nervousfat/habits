@@ -69,3 +69,27 @@ function renderHabits() {
   }
   if (!visible.length) byId('habit-list').append(element('p', habits.length ? '这个筛选条件下没有习惯。' : '从一件小事开始，添加你的第一个习惯。', 'empty'));
 }
+
+byId('habit-form').addEventListener('submit', event => {
+  event.preventDefault();
+  action(() => {
+    if (habits.length >= 100) throw new Error('最多支持 100 个习惯。');
+    const weekdays = [...byId('weekdays').querySelectorAll('input:checked')].map(input => Number(input.value));
+    const habit = core.createHabit(byId('habit-name').value, weekdays, crypto.randomUUID(), core.todayKey(), byId('color').value);
+    commit([...habits, habit], '新习惯已添加，从今天开始。');
+    byId('habit-name').value = '';
+  });
+});
+byId('active-date').addEventListener('change', () => action(() => {
+  const date = core.validDate(byId('active-date').value);
+  if (date > core.todayKey()) { byId('active-date').value = core.todayKey(); throw new Error('不能查看未来打卡。'); }
+  render();
+}));
+byId('today').addEventListener('click', () => {
+  byId('active-date').value = core.todayKey();
+  byId('month').value = core.todayKey().slice(0, 7);
+  render();
+});
+byId('filter').addEventListener('change', renderHabits);
+byId('month').addEventListener('change', () => action(renderCalendar));
+byId('calendar-habit').addEventListener('change', () => action(renderCalendar));
