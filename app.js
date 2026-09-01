@@ -93,3 +93,50 @@ byId('today').addEventListener('click', () => {
 byId('filter').addEventListener('change', renderHabits);
 byId('month').addEventListener('change', () => action(renderCalendar));
 byId('calendar-habit').addEventListener('change', () => action(renderCalendar));
+
+function renderOverview() {
+  const date = byId('active-date').value;
+  const scheduled = habits.filter(habit => core.isScheduled(habit, date));
+  const completed = scheduled.filter(habit => habit.logs.includes(date));
+  byId('metrics').replaceChildren();
+  for (const [label, value] of [['习惯总数', habits.length], ['当天计划', scheduled.length], ['当天完成', completed.length], ['完成比例', (scheduled.length ? Math.round(completed.length / scheduled.length * 100) : 0) + '%']]) {
+    const card = element('div', undefined, 'card');
+    card.append(element('div', label, 'muted'), element('div', value, 'metric'));
+    byId('metrics').append(card);
+  }
+  byId('week').replaceChildren();
+  for (const day of core.weekSummary(habits, date)) {
+    const cell = element('div', undefined, 'week-day' + (day.date === date ? ' active' : ''));
+    const weekday = new Date(day.date + 'T00:00:00Z').getUTCDay();
+    cell.append(element('small', '周' + weekdayNames[weekday]), element('strong', day.date.slice(8)), element('span', day.date > core.todayKey() ? '—' : day.completed + '/' + day.scheduled, 'muted'));
+    byId('week').append(cell);
+  }
+}
+function renderCalendar() {
+  const target = byId('calendar');
+  target.replaceChildren();
+  for (const day of ['一', '二', '三', '四', '五', '六', '日']) target.append(element('small', day, 'calendar-heading'));
+  const habit = habits.find(item => item.id === byId('calendar-habit').value);
+  if (!habit) { target.append(element('p', '添加习惯后查看月历。', 'calendar-empty muted')); return; }
+  for (const { date, inMonth } of core.monthGrid(byId('month').value)) {
+    const done = habit.logs.includes(date);
+    const scheduled = core.isScheduled(habit, date);
+    const button = element('button', Number(date.slice(8)), 'day' + (done ? ' done' : '') + (!inMonth ? ' outside' : ''));
+    button.type = 'button';
+    button.disabled = !inMonth || !scheduled || date > core.todayKey() || storageBlocked;
+    button.setAttribute('aria-label', date + (done ? ' 已完成，点击撤销' : scheduled ? ' 未完成，点击打卡' : ' 休息日'));
+    button.setAttribute('aria-pressed', String(done));
+    button.addEventListener('click', () => action(() => commit(core.toggleLog(habits, habit.id, date, core.todayKey()), '已更新 ' + date + ' 的记录。')));
+    target.append(button);
+  }
+}
+function render() {
+  byId('active-date').max = core.todayKey();
+  if (!byId('active-date').value) byId('active-date').value = core.todayKey();
+  if (!byId('month').value) byId('month').value = core.todayKey().slice(0, 7);
+  const chosen = byId('calendar-habit').value;
+  byId('calendar-habit').replaceChildren();
+  for (const habit of habits) { const option = element('option', habit.name); option.value = habit.id; byId('calendar-habit').append(option); }
+  if (habits.some(habit => habit.id === chosen)) byId('calendar-habit').value = chosen;
+  renderHabits(); renderOverview(); renderCalendar();
+}
