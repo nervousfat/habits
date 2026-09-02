@@ -1,0 +1,33 @@
+.topbar { align-items: end; }
+.topbar > label:first-child { max-width: 200px; }
+#status { min-height: 30px; margin: 18px 0; }
+.metrics { grid-template-columns: repeat(4, 1fr); margin-bottom: 24px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(290px, 1fr); gap: 24px; align-items: start; }
+.section-title { justify-content: space-between; margin-bottom: 12px; }
+.section-title h2, .section-title h3 { margin: 0; }
+.compact { max-width: 150px; }
+.habit { padding: 18px; border: 1px solid var(--line); border-left: 4px solid #36856a; border-radius: 10px; }
+.habit-blue { border-left-color: #377da1; }
+.habit-amber { border-left-color: #c59834; }
+.habit-rose { border-left-color: #b76575; }
+.habit h3 { overflow-wrap: anywhere; }
+.habit p { font-size: .8rem; margin: 8px 0; }
+.habit .toolbar { margin-top: 12px; }
+.habit button { padding: .4rem .7rem; font-size: .8rem; }
+fieldset { padding: 0; border: 0; margin: 0; min-width: 0; }
+legend { font-weight: 600; font-size: .9rem; margin-bottom: 10px; }
+.weekday-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.weekday-options label { display: flex; align-items: center; font-weight: 400; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.week-day { display: grid; gap: 8px; text-align: center; padding: 12px 2px; border-radius: 10px; background: #f4f6f1; font-size: .8rem; }
+.week-day.active { background: #e1efe5; outline: 1px solid #b5cfbc; }
+.calendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.calendar-heading { text-align: center; padding: 4px; }
+.day { padding: 0; min-height: 34px; border-radius: 50%; background: #edf1e9; color: var(--ink); font-size: .78rem; }
+.day.done { background: var(--accent); color: white; }
+.day.outside { visibility: hidden; }
+.day:disabled:not(.done) { background: transparent; opacity: .35; }
+.calendar-empty { grid-column: 1 / -1; text-align: center; padding: 10px; }
+.help { margin-top: 24px; background: #eaf0e2; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .metrics { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 440px) { .week-day { font-size: .7rem; } .week { gap: 3px; } .section-title { align-items: start; } }
