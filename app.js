@@ -172,3 +172,11 @@ byId('recover').addEventListener('click', () => {
     render(); announce('已清除损坏数据，可以重新开始。');
   });
 });
+
+const helpTitle = element('h2', '给节奏留一点余地');
+const helpText = element('p', '连续次数只计算计划日，休息日不会中断；今天尚未打卡时，会保留上一次的连续记录，直到今天结束。可补记过去的计划日，也可撤销误点。');
+const helpNote = element('p', '更换浏览器或清理站点数据不会保留这些记录，请定期导出 JSON 备份。', 'muted');
+byId('help').append(helpTitle, helpText, helpNote);
+window.addEventListener('focus', () => action(render));
+render();
+announce(initialMessage);
